@@ -1,85 +1,80 @@
 import random
 
+#initialize losses
+player1_losses= 0
+player2_losses = 0
+computer_losses = 0
+play_again = "y"
 
+# Initial prompt for the number of sticks
+sticks = input("Enter the number of sticks to start with (between 10 and 100): ")
 
-def initialize_losses():
-    #This initializes the losses for each player
-    losses = {"Player 1":0, "Player 2":0, "Computer":0}
-    return losses
+# Loop until valid input is provided
+while play_again == "y":
+    while not (sticks.isdigit() and 10 <= int(sticks) <= 100):
+        print("Error: Please enter a valid number between 10 and 100.")
+        sticks = input("Enter the number of sticks to start with (between 10 and 100): ")
 
-def get_valid_sticks():
-    #prompting the user to put in a valid input
-    sticks = input("please enter the amount of sticks you want to take from the pile {10,100}")
-    #Error checking to tell the user to enter a valid input
-    while not sticks.isdigit() or not (10 <= int(sticcks) <= 100):
-        print("Please enter a valid number of sticks (between 10 and 100).")
-        sticks = input("Please enter the amount of sticks you want to start with (between 10 and 100): ")
-    return int(sticks)
+    # Convert to integer after validation
+    sticks = int(sticks)
 
+    # Display the result
+    print(f"The game will start with {sticks} sticks.")
 
-def computer_choice():
-    #Computer choosing sticks between 1 and 3
-    choice = random.randint(1, 3)
-    return choice
+    current_player = 1
 
-def player_choice(player_name):
-    move = int(input(f"{player_name}How many sticks do you want to take?"))
-    while not move.isdigit() or int(move) < 1 or int(move) > 3:
-        print("Please enter a valid number of sticks (1, 2, or 3).")
-        move = input(f", {player_name}how many sticks do you want to take (1, 2, or 3)? ")
-    return int(move)
+    while sticks > 0:
 
-def main(sticks, losses):
+        if current_player == 1:
+            print("It is players 1's turn")
+            user_input = input("Please take 1 - 3 sticks")
+            while not (user_input.isdigit() or 1 <= int(user_input) <= 3):
+                print("Error: Please enter a valid number between 1 and 3.")
+                user_input = input("Please take 1 - 3 sticks")
 
+            take = int(user_input)
+            sticks -= take
 
-        while sticks > 0:
-            p1_move = player_choice("Player 1")
-            sticks -= p1_move
-            print(f"Sticks remaining: {sticks}")
             if sticks <= 0:
-                print("Player 1 is the loser, he took the last stick")
-                losses["Player 1"] += 1
-                break  # The inner while loop ends here and continues to the next round
+                print("Player 1 took the last stick and looses")
+                player1_losses += 1
+            current_player += 1
 
-            p2_move = player_choice("Player 2")
-            sticks -= p2_move
-            print(f"Sticks remaining: {sticks}")
+        elif current_player == 2:
+            print(f"There are {sticks} sticks on the table")
+            print("It is players 2's turn")
+            user_input = input("Please take 1 - 3 sticks")
+            while not (user_input.isdigit() or 1 <= int(user_input) <= 3):
+                print("Error: Please enter a valid number between 1 and 3.")
+                user_input = input("Please take 1 - 3 sticks")
+            take = int(user_input)
+            sticks -= take
+
             if sticks <= 0:
-                print("Player 2 is the loser, he took the last sticks")
-                losses["Player 2"] += 1
-                break  # The inner while loop ends here and continues to the next round
+                print("Player 2 took the last stick and looses")
+                player2_losses += 1
+            current_player = "computer"
 
-            computer_move = computer_choice()
-            sticks -= computer_move
-            print(f"Sticks remaining: {sticks}")
+        elif current_player == "computer":
+            user_input = random.randint(1, 3)
+            print(f"The computer has taken {user_input} sticks")
+            sticks -= take
+            print(f"There are {sticks} sticks on the table")
+
             if sticks <= 0:
-                print("The computer took the last sticks, he is the loser")
-                losses["Computer"] += 1
-                break  # The inner while loop ends here and continues to the next round
+                print("Computer took the last stick and looses")
+                computer_losses += 1
+            current_player = 1
 
-        # Ask if the user wants to play again
-        ##play_again = input("Do you want to play again? Yes/No").lower()
+    play_again = input("Would you like to play again? (y/n): ").lower().strip()
+    while play_again != "y":
+        print(f"Player 1 losses: {player1_losses}")
+        print(f"Player 2 losses: {player2_losses}")
+        print(f"Computer losses: {computer_losses}")
 
-        return sticks
 
 
 
-def play_game():
-    losses = initialize_losses()
-
-    play_again = "yes"
-
-    while play_again == "yes":
-        sticks = get_valid_sticks()
-        print(f"starting with {sticks} sticks")
-        main(sticks, losses)
-
-        play_again = input("Do you want to play again? Yes/No")
-
-    print("Game over. Here are all the total losses:")
-    print(losses)
-
-play_game()
 
 
 
